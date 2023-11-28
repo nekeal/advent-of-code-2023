@@ -1,7 +1,7 @@
 # ⭐ Advent of Code 2023 - Python ⭐
 
 [![GitHub](https://img.shields.io/github/license/nekeal/advent-of-code-2023.svg)](https://github.com//nekeal/advent-of-code-2023/blob/master/LICENSE)
-
+![GitHub Workflow Status](https://github.com/github/docs/actions/workflows/test.yml/badge.svg)
 ---
 **Source Code**: [https://github.com/nekeal/advent-of-code-2023](https://github.com/nekeal/advent-of-code-2023)
 
