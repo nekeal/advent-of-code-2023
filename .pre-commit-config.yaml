@@ -1,0 +1,32 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+-   repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff-format
+        entry: poetry run ruff format
+        language: system
+        types: [python]
+      - id: ruff
+        name: ruff
+        entry: poetry run ruff --fix
+        language: system
+        types: [ python ]
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy .
+        require_serial: true
+        language: system
+        types: [python]
+        pass_filenames: false
