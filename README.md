@@ -20,6 +20,9 @@ forking this repository or working with a copy of it.
 This template comes with a CLI tool powered by [Typer](https://github.com/tiangolo/typer) to help you with boilerplate
 code and basic tasks like creating a directory for a new day, running tests, etc.
 
+> [!NOTE]
+> To use the CLI tool you need to install requirements. For details see [Development](#development) section.
+
 ### Starting solution for a new day
 
 ```sh
@@ -90,6 +93,15 @@ aoc verify <day> -t
 To check for a regression (😉) you can run all tests at once:
 ```sh
 aoc verify
+```
+
+### Running tests after each change
+
+If you don't like the idea of running tests manually, there is a pre-installed [pytest-watcher](https://github.com/olzhasar/pytest-watcher)
+package that will run tests for you after each change in the code.
+
+```sh
+ptw src/aoc
 ```
 
 ## Development
