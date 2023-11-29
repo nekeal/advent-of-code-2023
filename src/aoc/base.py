@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 import __main__
+import pytest
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 
@@ -64,10 +65,14 @@ class BaseChallenge(abc.ABC):
         return solution1, solution2
 
 
+class NotSet:
+    """A class to represent a value that is not set."""
+
+
 class BaseTestChallenge:
     challenge_class: type[BaseChallenge]
-    expected_results_from_test_data: tuple[Any, Any] = (None, None)
-    expected_results_from_real_data: tuple[Any, Any] = (None, None)
+    expected_results_from_test_data: tuple[Any, Any] = (NotSet, NotSet)
+    expected_results_from_real_data: tuple[Any, Any] = (NotSet, NotSet)
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -75,41 +80,38 @@ class BaseTestChallenge:
             raise ValueError(
                 f"You must define a challenge_class attribute on class {cls.__name__}."
             )
+        if (
+            not isinstance(cls.expected_results_from_test_data, tuple)
+            or len(cls.expected_results_from_test_data) != 2
+        ):
+            raise ValueError(
+                "expected_results_from_test_data must be a tuple of 2 elements."
+            )
+
+        if (
+            not isinstance(cls.expected_results_from_real_data, tuple)
+            or len(cls.expected_results_from_real_data) != 2
+        ):
+            raise ValueError(
+                "expected_results_from_real_data must be a tuple of 2 elements."
+            )
 
     def test_on_sample_data_part_1(self):
-        assert self.expected_results_from_test_data != (None, None), (
-            "You should set the expected results from test data as "
-            "expected_results_from_test_data = (part_1_result, part_2_result)"
-        )
-        assert (
-            self.challenge_class(use_test_data=True).part_1()
-            == self.expected_results_from_test_data[0]
-        )
+        if (expected_result := self.expected_results_from_test_data[0]) == NotSet:
+            pytest.skip("No expected result for part one of test data set.")
+        assert self.challenge_class(use_test_data=True).part_1() == expected_result
 
     def test_on_sample_data_part_2(self):
-        assert self.expected_results_from_test_data != (None, None), (
-            "You should set the expected results from test data as "
-            "expected_results_from_test_data = (part_1_result, part_2_result)"
-        )
-        assert (
-            self.challenge_class(use_test_data=True).part_2()
-            == self.expected_results_from_test_data[1]
-        )
+        if (expected_result := self.expected_results_from_test_data[1]) == NotSet:
+            pytest.skip("No expected results for part two of test data set.")
+        assert self.challenge_class(use_test_data=True).part_2() == expected_result
 
     def test_on_real_data_part_1(self):
-        assert self.expected_results_from_real_data != (None, None), (
-            "You should set the expected results from test data as "
-            "expected_results_from_real_data = (part_1_result, part_2_result)"
-        )
-        assert (
-            self.challenge_class().part_1() == self.expected_results_from_real_data[0]
-        )
+        if (expected_result := self.expected_results_from_real_data[0]) == NotSet:
+            pytest.skip("No expected result for part one of real data set.")
+        assert self.challenge_class().part_1() == expected_result
 
     def test_on_real_data_part_2(self):
-        assert self.expected_results_from_real_data != (None, None), (
-            "You should set the expected results from test data as "
-            "expected_results_from_real_data = (part_1_result, part_2_result)"
-        )
-        assert (
-            self.challenge_class().part_2() == self.expected_results_from_real_data[1]
-        )
+        if (expected_result := self.expected_results_from_real_data[1]) == NotSet:
+            pytest.skip("No expected results for part two of real data set.")
+        assert self.challenge_class().part_2() == expected_result
