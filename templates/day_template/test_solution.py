@@ -1,4 +1,4 @@
-from aoc.base import BaseTestChallenge, Empty
+from aoc.base_tests import BaseTestChallenge, Empty
 
 from . import Challenge
 

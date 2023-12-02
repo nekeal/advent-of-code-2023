@@ -1,3 +1,3 @@
 import pytest
 
-pytest.register_assert_rewrite("aoc.base")
+pytest.register_assert_rewrite("aoc.base_tests")

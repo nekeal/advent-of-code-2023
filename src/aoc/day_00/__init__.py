@@ -5,10 +5,10 @@ class Challenge(BaseChallenge):
     """Base class for all challenges."""
 
     def part_1(self) -> int | str:
-        return int(all(self.input_lines()))
+        return int(all(self.get_input_lines(part=1)))
 
     def part_2(self) -> int | str:
-        return sum(map(int, self.input_lines()))
+        return sum(map(int, self.get_input_lines(part=2)))
 
 
 if __name__ == "__main__":

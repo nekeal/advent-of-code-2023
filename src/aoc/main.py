@@ -58,6 +58,7 @@ def verify(
     ),
 ):
     """Verify the challenge."""
+    pytest_args = ["-W", "ignore:Module already imported"][:2]
     pytest_args = []
     if sample_data_only:
         pytest_args.extend(["-k", "sample_data"])
@@ -74,6 +75,7 @@ def verify(
                 )
             )
             raise typer.Exit(1)
+        del locals()["module"]
         pytest_args.append(module.__file__)
     print(pytest_args)
     pytest.main(pytest_args)
