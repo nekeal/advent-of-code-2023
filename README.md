@@ -51,16 +51,12 @@ Day 0 - Part 2: 55
 This command will run the solution for the given day using `data/00_input.txt` file and print the answers
 for both parts.
 
-If you also want to see the result for the test data, you can use the `-t/--test-data` flag.
+If you want to see the result only for the test data, you can use the `-t/--test-data` flag.
 ```sh
 $ aoc run <day> -t
 Using data from 00_test_input.txt
 Day 0 - Part 1: 1
 Day 0 - Part 2: 10
-
-Using data from 00_input.txt
-Day 0 - Part 1: 1
-Day 0 - Part 2: 55
 ```
 
 ### Verifying solution

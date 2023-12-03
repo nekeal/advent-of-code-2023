@@ -27,7 +27,8 @@ def run_challenge(day: int, test_data: bool):
     module = import_challenge_module(day)
     if test_data:
         module.Challenge(use_test_data=True).run()
-    module.Challenge(use_test_data=False).run()
+    else:
+        module.Challenge(use_test_data=False).run()
 
 
 @app.command()
