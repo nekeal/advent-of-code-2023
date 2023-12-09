@@ -9,16 +9,31 @@ import typer
 app = typer.Typer(no_args_is_help=True)
 
 
+def echo(text, fg=typer.colors.GREEN):
+    typer.echo(
+        typer.style(
+            text,
+            fg=fg,
+        )
+    )
+
+
 def import_challenge_module(day: int):
+    module_name = f"aoc.day_{day:02}"
     try:
-        module = importlib.import_module(f"aoc.day_{day:02}")
+        module = importlib.import_module(module_name)
     except ModuleNotFoundError as e:
-        typer.echo(
-            typer.style(
-                f'You have not solved day {day} yet. Start it using "new-day" command',
+        echo(
+            f'Could not import "{e.name}"',
+            fg=typer.colors.RED,
+        )
+        if e.name == module_name:
+            echo(
+                f"You have not solved day {day} yet. Start it using 'new-day' command",
                 fg=typer.colors.RED,
             )
-        )
+        else:
+            raise e
         raise typer.Exit(1) from e
     return module
 
