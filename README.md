@@ -31,6 +31,13 @@ aoc new-day <day>
 It will create a `src/aoc/day_<day>` directory with a `__init__.py` and a `test_solution.py` python files.
 It will also create text files for both test and real data in the `data/` directory.
 
+#### NEW! Downloading input data
+
+Now this template uses [advent-of-code-data](https://github.com/wimglenn/advent-of-code-data) package to download
+your personal input data. To use it you need to set `AOC_SESSION` environment variable to your session cookie value.
+You can find it in your [browser's dev tools](https://github.com/wimglenn/advent-of-code-wim/issues/1)
+after logging in to the Advent of Code website.
+
 ### Implementing a solution for a day
 
 `BaseChallenge` class is provided to help you with the boilerplate code. By default, each day's solution inherits
@@ -99,6 +106,18 @@ package that will run tests for you after each change in the code.
 ```sh
 ptw src/aoc
 ```
+
+### Submitting solution
+
+Thanks to [advent-of-code-data](https://github.com/wimglenn/advent-of-code-wim/issues/1) package, you can submit your
+solution directly from the command line.
+
+```sh
+aoc submit <day> <part>
+```
+
+Under the hood, it will run the solution for the given day and part,
+and submit the answer to the Advent of Code website.
 
 ## Development
 

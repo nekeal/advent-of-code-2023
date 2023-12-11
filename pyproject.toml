@@ -30,6 +30,7 @@ aoc = 'aoc.main:app'
 [tool.poetry.dependencies]
 python = ">=3.11, <4.0"
 typer = "^0.9.0"
+advent-of-code-data = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
@@ -101,3 +102,7 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 warn_return_any = true
 check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "aocd.*"
+ignore_missing_imports = true
