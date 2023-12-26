@@ -73,7 +73,6 @@ def longest_path(start, end, neighbors):
     q = deque([(start, 0)])
     result = 0
     visited: set[tuple[int, int]] = set()
-    # dfs
     while q:
         (r, c), d = q.pop()
         if d == -1:
@@ -91,6 +90,24 @@ def longest_path(start, end, neighbors):
     return result
 
 
+ans = 0
+
+
+def dfs(v, d, end, neighbors, visited):
+    # it occures that "visited" implementation based on list of lists is way
+    # faster than set or dict based one
+    global ans
+    r, c = v
+    if visited[r][c]:
+        return
+    visited[r][c] = True
+    if r == end[0]:
+        ans = max(ans, d)
+    for nr, nc, dist in neighbors[v]:
+        dfs((nr, nc), d + dist, end, neighbors, visited)
+    visited[r][c] = False
+
+
 class Challenge(BaseChallenge):
     def part_1(self):
         data = self.get_input_lines(part=1)
@@ -101,12 +118,17 @@ class Challenge(BaseChallenge):
         return result
 
     def part_2(self):
+        global ans
+        ans = 0
         data = self.get_input_lines(part=2)
         neighbors = get_neighbours2(data)
         reduce_neighbours(neighbors)
         n, m = len(data), len(data[0])
-
-        return longest_path((0, 1), (n - 1, m - 2), neighbors)
+        visited = [[False for _ in range(m)] for _ in range(n)]
+        dfs((0, 1), 0, (n - 1, m - 2), neighbors, visited=visited)
+        return ans
+        # iterative approach is slower than recursive one
+        # longest_path((0, 1), (n - 1, m - 2), neighbors)  # noqa: ERA003
 
 
 if __name__ == "__main__":
