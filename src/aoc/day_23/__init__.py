@@ -1,6 +1,59 @@
 from collections import defaultdict, deque
+from typing import Generic, Iterable, Protocol, TypeVar
 
 from aoc.base import BaseChallenge
+
+T = TypeVar("T", contravariant=True)
+
+
+class VisitedContainer(Protocol[T]):
+    def add(self, value: T) -> None: ...
+
+    def remove(self, value: T): ...
+
+    def __contains__(self, value: T) -> bool: ...
+
+
+class VisitedSet(Generic[T]):
+    def __init__(self, initial: Iterable[T] = ()):
+        self._visited: set[T] = set(initial)
+
+    def add(self, value: T):
+        self._visited.add(value)
+
+    def remove(self, value: T):
+        self._visited.remove(value)
+
+    def __contains__(self, value: T):
+        return value in self._visited
+
+
+class VisitedDict(Generic[T]):
+    def __init__(self, initial: Iterable[T] = ()):
+        self._visited: dict[T, bool] = {v: False for v in initial}
+
+    def add(self, value: T):
+        self._visited[value] = True
+
+    def remove(self, value: T):
+        self._visited[value] = False
+
+    def __contains__(self, value: T):
+        return self._visited.get(value, False)
+
+
+class VisitedList:
+    def __init__(self, n: int, m: int):
+        self.visited_list = [[False for _ in range(m)] for _ in range(n)]
+
+    def add(self, value: tuple[int, int]):
+        self.visited_list[value[0]][value[1]] = True
+
+    def remove(self, value: tuple[int, int]):
+        self.visited_list[value[0]][value[1]] = False
+
+    def __contains__(self, value: tuple[int, int]):
+        return self.visited_list[value[0]][value[1]]
 
 
 def get_neighbours(data):
@@ -69,10 +122,9 @@ def reduce_neighbours(neighbors: dict[tuple[int, int], set[tuple[int, int, int]]
             break
 
 
-def longest_path(start, end, neighbors):
+def longest_path(start, end, neighbors, visited: VisitedContainer[tuple[int, int]]):
     q = deque([(start, 0)])
     result = 0
-    visited: set[tuple[int, int]] = set()
     while q:
         (r, c), d = q.pop()
         if d == -1:
@@ -113,7 +165,7 @@ class Challenge(BaseChallenge):
         data = self.get_input_lines(part=1)
         neighbors = get_neighbours(data)
         n, m = len(data), len(data[0])
-        result = longest_path((0, 1), (n - 1, m - 2), neighbors)
+        result = longest_path((0, 1), (n - 1, m - 2), neighbors, VisitedSet())
 
         return result
 
@@ -124,11 +176,13 @@ class Challenge(BaseChallenge):
         neighbors = get_neighbours2(data)
         reduce_neighbours(neighbors)
         n, m = len(data), len(data[0])
-        visited = [[False for _ in range(m)] for _ in range(n)]
-        dfs((0, 1), 0, (n - 1, m - 2), neighbors, visited=visited)
+        visited_list = VisitedList(n, m)
+        visited_dict = VisitedDict((i, j) for i in range(n) for j in range(m))  # noqa: F841
+        visited_set: VisitedSet[int] = VisitedSet()  # noqa: F841
+        dfs((0, 1), 0, (n - 1, m - 2), neighbors, visited=visited_list.visited_list)
         return ans
         # iterative approach is slower than recursive one
-        # longest_path((0, 1), (n - 1, m - 2), neighbors)  # noqa: ERA003
+        return longest_path((0, 1), (n - 1, m - 2), neighbors, VisitedList(n, m))
 
 
 if __name__ == "__main__":
