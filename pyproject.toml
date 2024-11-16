@@ -34,6 +34,7 @@ python = ">=3.11, <4.0"
 typer = "^0.9.0"
 advent-of-code-data = "^2.0.1"
 z3-solver = "^4.12.4.0"
+networkx = "^3.2.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
@@ -114,5 +115,5 @@ module = "aocd.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "z3.*"
+module = ["z3.*", "networkx.*"]
 ignore_missing_imports = true
