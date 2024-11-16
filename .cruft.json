@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/nekeal/cookiecutter-python-package",
-  "commit": "d31925e91689aaddecbf2a1f8d29d5d3cbf451ee",
+  "commit": "5ce8cdcdf6b14e216a450efd12e888019856616c",
   "checkout": null,
   "context": {
     "cookiecutter": {

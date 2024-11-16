@@ -145,7 +145,7 @@ aoc verify
 
 ### Pre-commit
 
-Pre-commit hooks run all the auto-formatters (e.g. `ruff`), linters (e.g. `mypy`), and other quality
+Pre-commit hooks run all the auto-formatting (`ruff format`), linters (e.g. `ruff` and `mypy`), and other quality
  checks to make sure the changeset is in good shape before a commit/push happens.
 
 You can install hooks with (runs for each commit):
