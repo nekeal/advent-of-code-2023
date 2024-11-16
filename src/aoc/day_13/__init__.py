@@ -3,20 +3,10 @@ from functools import reduce
 from typing import Generator
 
 from aoc.base import BaseChallenge
+from aoc.data_structures import Matrix
 
 
-class Matrix:
-    def __init__(self, matrix: list[str]):
-        self.matrix = matrix
-
-    @property
-    def height(self):
-        return len(self.matrix)
-
-    @property
-    def width(self):
-        return len(self.matrix[0])
-
+class MirrorMatrix(Matrix):
     def find_mirrors(self, smudges: int) -> Generator[int, None, None]:
         for c in range(self.width - 1):
             badness = 0
@@ -55,9 +45,9 @@ class Challenge(BaseChallenge):
             ),
         )
 
-    def get_matrixes(self, part) -> Generator[Matrix, None, None]:
+    def get_matrixes(self, part) -> Generator[MirrorMatrix, None, None]:
         yield from (
-            Matrix(matrix.splitlines())
+            MirrorMatrix(matrix.splitlines())
             for matrix in "\n".join(self.get_input_lines(part=part)).split("\n\n")
         )
 
