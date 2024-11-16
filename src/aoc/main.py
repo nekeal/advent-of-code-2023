@@ -1,7 +1,7 @@
 import importlib
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import aocd
 import pytest
@@ -9,6 +9,7 @@ import typer
 from aocd import AocdError
 from aocd.exceptions import PuzzleLockedError
 from aocd.models import Puzzle
+from mypy.nodes import TypeGuard
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -129,6 +130,32 @@ def verify(
     pytest.main(pytest_args)
 
 
+def _check_type_of_part(part: str) -> TypeGuard[Literal["a", "b"]]:
+    if part in ("a", "b"):
+        return True
+    return False
+
+
+def _transform_part(part: str) -> str:
+    if part in ("1", "2"):
+        return chr(ord("a") + int(part) - 1)
+    return part
+
+
+def _full_validate(part: str) -> Literal["a", "b"]:
+    part = _transform_part(part)
+    if _check_type_of_part(part):
+        return part
+
+    typer.echo(
+        typer.style(
+            f"Invalid part {part}. Must be one of 1, 2, a, b.",
+            fg=typer.colors.RED,
+        )
+    )
+    raise typer.Exit(1)
+
+
 @app.command()
 def submit(
     day: int,
@@ -137,22 +164,13 @@ def submit(
         "You can use numbers 1/2 or letters a/b."
     ),
 ):
-    if part in ("1", "2"):
-        part = chr(ord("a") + int(part) - 1)
-    if part not in ("a", "b"):
-        typer.echo(
-            typer.style(
-                f"Invalid part {part}. Must be one of 1, 2, a, b.",
-                fg=typer.colors.RED,
-            )
-        )
-        raise typer.Exit(1)
+    validated_part = _full_validate(part)
     module = import_challenge_module(day)
-    if part == "a":
+    if validated_part == "a":
         solution = module.Challenge(use_test_data=False).part_1()
     else:
         solution = module.Challenge(use_test_data=False).part_2()
-    aocd.submit(solution, day=day, year=2023, part=part)
+    aocd.submit(solution, day=day, year=2023, part=validated_part)
 
 
 @app.command()
