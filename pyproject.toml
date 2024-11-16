@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "advent-of-code-2023"
+name = "advent-of-code"
 version = "0.0.1"
-description = "Solution of Advent of Code 2023 in Python"
+description = "Solution of Advent of Code in Python"
 authors = [
     "nekeal <szymon.sc.cader@gmail.com>",
 ]
 license = "MIT"
 readme = "README.md"
 
-homepage = "https://nekeal.github.io/advent-of-code-2023"
-repository = "https://github.com/nekeal/advent-of-code-2023"
+homepage = "https://nekeal.github.io/advent-of-code"
+repository = "https://github.com/nekeal/advent-of-code"
 
 classifiers = [
     "Intended Audience :: Developers",
@@ -17,6 +17,8 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]

@@ -7,9 +7,9 @@
       "author_name": "nekeal",
       "author_email": "szymon.sc.cader@gmail.com",
       "github_username": "nekeal",
-      "project_name": "Advent of Code 2023 - Python",
-      "project_slug": "advent-of-code-2023",
-      "package_name": "aoc2023",
+      "project_name": "Advent of Code - Python",
+      "project_slug": "advent-of-code",
+      "package_name": "aoc",
       "project_short_description": "Solution of Advent of Code 2023 in Python",
       "python_version": "3.11+",
       "_python_version_specs": {

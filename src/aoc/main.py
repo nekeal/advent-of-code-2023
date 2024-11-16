@@ -1,7 +1,8 @@
 import importlib
 import shutil
+from datetime import datetime
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import aocd
 import pytest
@@ -12,6 +13,15 @@ from aocd.models import Puzzle
 from mypy.nodes import TypeGuard
 
 app = typer.Typer(no_args_is_help=True)
+
+
+def get_current_aoc_year():
+    """
+    Returns the current year if the current month is December (and the new AOC started)
+    or the previous year otherwise.
+    """
+    now = datetime.now()
+    return now.year if now.month == 12 else now.year - 1
 
 
 def echo(text, fg=typer.colors.GREEN):
@@ -51,9 +61,9 @@ def run_challenge(day: int, test_data: bool):
         module.Challenge(use_test_data=False).run()
 
 
-def get_puzzle_object(day: int) -> Puzzle | None:
+def get_puzzle_object(year: int, day: int) -> Puzzle | None:
     try:
-        puzzle = Puzzle(year=2023, day=day)
+        puzzle = Puzzle(year=year, day=day)
         return puzzle
     except AocdError:
         pass
@@ -93,7 +103,7 @@ def run(
 
 @app.command()
 def verify(
-    day: Optional[int] = typer.Argument(None, help="Day of the challenge to verify."),
+    day: int | None = typer.Argument(None, help="Day of the challenge to verify."),
     part_one_only: bool = typer.Option(
         False, "--part-one", "-1", help="Verify only part one of the solution."
     ),
@@ -159,6 +169,12 @@ def _full_validate(part: str) -> Literal["a", "b"]:
 @app.command()
 def submit(
     day: int,
+    year: int = typer.Option(
+        get_current_aoc_year(),
+        "--year",
+        "-y",
+        help="Year for which to submit the solution.",
+    ),
     part: str = typer.Argument(
         help="Which part of the solution to submit. "
         "You can use numbers 1/2 or letters a/b."
@@ -170,12 +186,18 @@ def submit(
         solution = module.Challenge(use_test_data=False).part_1()
     else:
         solution = module.Challenge(use_test_data=False).part_2()
-    aocd.submit(solution, day=day, year=2023, part=validated_part)
+    aocd.submit(solution, day=day, year=year, part=validated_part)
 
 
 @app.command()
 def new_day(
     day: int = typer.Argument(help="Day for which to create a directory."),
+    year: int = typer.Option(
+        get_current_aoc_year(),
+        "--year",
+        "-y",
+        help="Year for which to get the puzzle data",
+    ),
     force: bool = typer.Option(
         False,
         "--force",
@@ -184,7 +206,7 @@ def new_day(
     ),
 ):
     """Create a directory for a new day challenge."""
-    puzzle = get_puzzle_object(day)
+    puzzle = get_puzzle_object(year, day)
     if day < 1 or day > 25:
         typer.echo(typer.style("Day must be between 1 and 25.", fg=typer.colors.RED))
         raise typer.Exit(1)

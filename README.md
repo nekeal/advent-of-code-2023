@@ -1,13 +1,13 @@
-# ⭐ Advent of Code 2023 - Python ⭐
+# ⭐ Advent of Code - Python ⭐
 
 [![GitHub](https://img.shields.io/github/license/nekeal/advent-of-code-2023.svg)](https://github.com//nekeal/advent-of-code-2023/blob/master/LICENSE)
 ![GitHub Workflow Status](https://github.com/github/docs/actions/workflows/test.yml/badge.svg)
 ---
-**Source Code**: [https://github.com/nekeal/advent-of-code-2023](https://github.com/nekeal/advent-of-code-2023)
+**Source Code**: [https://github.com/nekeal/advent-of-code](https://github.com/nekeal/advent-of-code-2023)
 
 ---
 
-Solutions for Advent of Code 2023 in Python
+Solutions for Advent of Code in Python
 
 ## Use this project as a template
 
