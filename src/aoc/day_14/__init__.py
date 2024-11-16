@@ -1,6 +1,5 @@
 import functools
 from collections import defaultdict
-from pprint import pprint
 
 from aoc.base import BaseChallenge
 
@@ -8,12 +7,26 @@ from aoc.base import BaseChallenge
 class Challenge(BaseChallenge):
     def part_1(self):
         simple_matrix = tuple(tuple(line) for line in self.get_input_lines(part=1))
-        new_matrix = self.tilt2(simple_matrix)
+        new_matrix = self.tilt(simple_matrix)
         return self.score(new_matrix)
 
     def part_2(self):
         simple_matrix = tuple(tuple(line) for line in self.get_input_lines(part=2))
-        pprint(simple_matrix)
+        t = 0
+        target = 1_000_000_000
+        matrix_cache: dict[int, int] = {}  # stores a first occurrence of a matrix
+        while t < target:
+            simple_matrix = self.cycle(simple_matrix)
+            if hash(simple_matrix) in matrix_cache:  # found a cycle
+                cycle_length = t - matrix_cache[hash(simple_matrix)]
+                t += cycle_length * ((target - t) // cycle_length)
+            else:
+                matrix_cache[hash(simple_matrix)] = t
+            t += 1
+        return self.score(simple_matrix)
+
+    def part_2_slow(self):
+        simple_matrix = tuple(tuple(line) for line in self.get_input_lines(part=2))
         for _ in range(int(1e9 / 1e4)):
             simple_matrix = self.ten_thousand_cycles(simple_matrix)
         return self.score(simple_matrix)
@@ -32,10 +45,10 @@ class Challenge(BaseChallenge):
 
     @functools.lru_cache(maxsize=None)  # noqa: B019
     def single_round(self, matrix: tuple[tuple[str]]):
-        return self.rotate_90(self.tilt2(matrix))
+        return self.rotate_90(self.tilt(matrix))
 
     @functools.lru_cache(maxsize=None)  # noqa: B019
-    def tilt2(self, matrix: tuple[tuple[str, ...], ...]):
+    def tilt(self, matrix: tuple[tuple[str, ...], ...]):
         matrix_c = list(matrix)
         positions_per_row: dict[int, list[int]] = defaultdict(list)
         for c in range(len(matrix_c[0])):
