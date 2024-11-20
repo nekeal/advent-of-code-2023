@@ -2,7 +2,7 @@ import importlib
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 import aocd
 import pytest
@@ -136,7 +136,8 @@ def verify(
             )
             raise typer.Exit(1)
         del locals()["module"]
-        pytest_args.append(module.__file__)
+        pytest_args.append(module.__path__[0])
+        print(pytest_args)
     pytest.main(pytest_args)
 
 
@@ -191,26 +192,50 @@ def submit(
 
 @app.command()
 def new_day(
-    day: int = typer.Argument(help="Day for which to create a directory."),
-    year: int = typer.Option(
-        get_current_aoc_year(),
-        "--year",
-        "-y",
-        help="Year for which to get the puzzle data",
-    ),
-    force: bool = typer.Option(
-        False,
-        "--force",
-        "-f",
-        help="Force creation of directory even if it already exists.",
-    ),
+    day: Annotated[int, typer.Argument(help="Day for which to create a directory.")],
+    year: Annotated[
+        int,
+        typer.Option(
+            "-y",
+            "--year",
+            help="Year for which to get the puzzle data",
+        ),
+    ] = get_current_aoc_year(),
+    directory: Annotated[
+        Path,
+        typer.Option(
+            ...,
+            "-d",
+            "--directory",
+            help="Path to a directory with challenges",
+        ),
+    ] = "src/aoc",
+    data_directory: Annotated[
+        Path,
+        typer.Option(help="Path to a directory with data."),
+    ] = "data",
+    template_directory: Annotated[
+        Path,
+        typer.Option(
+            "--template-directory",
+            help="Path to a template directory for a single day challenge.",
+        ),
+    ] = Path(__file__).parent / "templates/day_template",
+    force: Annotated[
+        bool,
+        typer.Option(
+            "--force",
+            "-f",
+            help="Force creation of directory even if it already exists.",
+        ),
+    ] = False,
 ):
     """Create a directory for a new day challenge."""
     puzzle = get_puzzle_object(year, day)
     if day < 1 or day > 25:
         typer.echo(typer.style("Day must be between 1 and 25.", fg=typer.colors.RED))
         raise typer.Exit(1)
-    destination = Path(f"src/aoc/day_{day:02}")
+    destination = directory.joinpath(f"day_{day:02}")
     if destination.exists() and not force:
         typer.echo(
             typer.style(
@@ -219,14 +244,13 @@ def new_day(
             )
         )
         raise typer.Exit(1)
-    shutil.copytree(
-        "templates/day_template", f"src/aoc/day_{day:02}", dirs_exist_ok=force
-    )
+    shutil.copytree(template_directory, destination, dirs_exist_ok=force)
     typer.echo(
         typer.style(f"Created solution directory for day {day}.", fg=typer.colors.GREEN)
     )
+    data_directory.mkdir(exist_ok=True)
     if (
-        real_input_data := Path(f"data/{day:02}_input.txt")
+        real_input_data := data_directory.joinpath(f"{day:02}_input.txt")
     ).exists() and real_input_data.stat().st_size:
         typer.echo(
             typer.style(
@@ -241,7 +265,7 @@ def new_day(
             typer.style(f"Created input data for day {day}.", fg=typer.colors.GREEN)
         )
     if (
-        test_input_data := Path(f"data/{day:02}_test_input.txt")
+        test_input_data := data_directory.joinpath(Path(f"{day:02}_test_input.txt"))
     ).exists() and test_input_data.stat().st_size:
         typer.echo(
             typer.style(
