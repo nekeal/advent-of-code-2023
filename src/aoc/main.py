@@ -12,6 +12,8 @@ from aocd.exceptions import PuzzleLockedError
 from aocd.models import Puzzle
 from mypy.nodes import TypeGuard
 
+from aoc.input_providers import SingleFileInputProvider, SmartFileInputProvider
+
 app = typer.Typer(no_args_is_help=True)
 
 
@@ -53,12 +55,17 @@ def import_challenge_module(day: int):
     return module
 
 
-def run_challenge(day: int, test_data: bool):
+def run_challenge(day: int, test_data: bool, input_path: Path | None = None):
     module = import_challenge_module(day)
+    input_provider = (
+        SingleFileInputProvider(day=day, input_path=input_path)
+        if input_path
+        else SmartFileInputProvider(day=day, use_test_data=test_data)
+    )
     if test_data:
-        module.Challenge(use_test_data=True).run()
+        module.Challenge(input_provider=input_provider).run()
     else:
-        module.Challenge(use_test_data=False).run()
+        module.Challenge(input_provider=input_provider).run()
 
 
 def get_puzzle_object(year: int, day: int) -> Puzzle | None:
@@ -92,13 +99,16 @@ def write_input_data(puzzle, real_input_data):
 
 @app.command()
 def run(
-    day: int = typer.Argument(..., help="Day of the challenge to run."),
+    day: Annotated[int, typer.Argument(..., help="Day of the challenge to run.")],
+    file: Annotated[
+        Path | None, typer.Option(..., "--file", "-f", help="File to run.")
+    ] = None,
     test_data: bool = typer.Option(
         False, "--test-data", "-t", help="Run challenge also for test data."
     ),
 ):
     """Run the challenge."""
-    run_challenge(day, test_data)
+    run_challenge(day, test_data, file)
 
 
 @app.command()
@@ -209,11 +219,11 @@ def new_day(
             "--directory",
             help="Path to a directory with challenges",
         ),
-    ] = "src/aoc",
+    ] = Path("src/aoc"),
     data_directory: Annotated[
         Path,
         typer.Option(help="Path to a directory with data."),
-    ] = "data",
+    ] = Path("data"),
     template_directory: Annotated[
         Path,
         typer.Option(
