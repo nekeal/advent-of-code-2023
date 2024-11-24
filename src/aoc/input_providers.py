@@ -1,5 +1,5 @@
 import abc
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass
 from pathlib import Path
 
 from aoc.logger import logger
@@ -7,6 +7,7 @@ from aoc.logger import logger
 
 @dataclass
 class InputProvider(abc.ABC):
+    year: int
     day: int
 
     @abc.abstractmethod
@@ -26,9 +27,10 @@ class InputProvider(abc.ABC):
 @dataclass
 class SmartFileInputProvider(InputProvider):
     use_test_data: bool = False
+    data_dir: InitVar[Path | None] = None
 
-    def __post_init__(self):
-        self._data_dir = Path(__file__).parents[2].joinpath("data")
+    def __post_init__(self, data_dir: Path | None):
+        self._data_dir = data_dir or Path(__file__).parents[2].joinpath("data")
 
     def provide_input(self, part: int | None) -> str:
         filename = self.get_input_filename(part)
@@ -45,7 +47,7 @@ class SmartFileInputProvider(InputProvider):
         default_filename = f"{base_filename}.txt"
         if part is not None:
             filename = f"{base_filename}_part_{part}.txt"
-            if self._data_dir.joinpath(filename).exists():
+            if self._data_dir.joinpath(str(self.year), filename).exists():
                 return filename
             else:
                 logger.info(
@@ -57,7 +59,7 @@ class SmartFileInputProvider(InputProvider):
 
     def get_input_file_path(self, filename: str) -> Path:
         """Return the input filename for this challenge."""
-        return self._data_dir.joinpath(filename)
+        return self._data_dir.joinpath(str(self.year), filename)
 
 
 @dataclass

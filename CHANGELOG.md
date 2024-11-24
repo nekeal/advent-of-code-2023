@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Extend cli with possibility to specify directories for: templates, challenges solutions, and data
 - Extend cli and `BaseChallenge` interface with possibility to specify custom input file
+- Add support for multiple years
 
 ### Fixed
 - Fixed typing in cli module

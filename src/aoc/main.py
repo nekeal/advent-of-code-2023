@@ -1,5 +1,6 @@
 import importlib
 import shutil
+import typing
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Literal
@@ -26,6 +27,9 @@ def get_current_aoc_year():
     return now.year if now.month == 12 else now.year - 1
 
 
+current_aoc_year = get_current_aoc_year()
+
+
 def echo(text, fg=typer.colors.GREEN):
     typer.echo(
         typer.style(
@@ -35,16 +39,29 @@ def echo(text, fg=typer.colors.GREEN):
     )
 
 
-def import_challenge_module(day: int):
-    module_name = f"aoc.day_{day:02}"
+year_option = Annotated[
+    int,
+    typer.Option(
+        "-y",
+        "--year",
+        help="Year for which to get the puzzle data",
+    ),
+]
+
+
+def get_challenge_module_name(year: int, day: int) -> str:
+    return f"aoc_solutions.{year}.day_{day:02}"
+
+
+def import_challenge_module(year, day: int):
     try:
-        module = importlib.import_module(module_name)
+        module = importlib.import_module(get_challenge_module_name(year, day))
     except ModuleNotFoundError as e:
         echo(
             f'Could not import "{e.name}"',
             fg=typer.colors.RED,
         )
-        if e.name == module_name:
+        if e.name == get_challenge_module_name:
             echo(
                 f"You have not solved day {day} yet. Start it using 'new-day' command",
                 fg=typer.colors.RED,
@@ -55,12 +72,20 @@ def import_challenge_module(day: int):
     return module
 
 
-def run_challenge(day: int, test_data: bool, input_path: Path | None = None):
-    module = import_challenge_module(day)
+def run_challenge(
+    year: int,
+    day: int,
+    test_data: bool,
+    data_dir: Path | None,
+    input_path: Path | None = None,
+):
+    module = import_challenge_module(year, day)
     input_provider = (
-        SingleFileInputProvider(day=day, input_path=input_path)
+        SingleFileInputProvider(year=year, day=day, input_path=input_path)
         if input_path
-        else SmartFileInputProvider(day=day, use_test_data=test_data)
+        else SmartFileInputProvider(
+            year=year, day=day, data_dir=data_dir, use_test_data=test_data
+        )
     )
     if test_data:
         module.Challenge(input_provider=input_provider).run()
@@ -100,20 +125,31 @@ def write_input_data(puzzle, real_input_data):
 @app.command()
 def run(
     day: Annotated[int, typer.Argument(..., help="Day of the challenge to run.")],
+    year: year_option = current_aoc_year,
+    data_directory: Annotated[
+        Path,
+        typer.Option(
+            help="Path to a directory with data. Will be used if you won't provide"
+            " --file/-f option"
+        ),
+    ] = Path("data"),
     file: Annotated[
-        Path | None, typer.Option(..., "--file", "-f", help="File to run.")
+        typing.Optional[Path], typer.Option(..., "--file", "-f", help="File to run.")  # noqa
     ] = None,
     test_data: bool = typer.Option(
         False, "--test-data", "-t", help="Run challenge also for test data."
     ),
 ):
     """Run the challenge."""
-    run_challenge(day, test_data, file)
+    run_challenge(year, day, test_data, data_directory, file)
 
 
 @app.command()
 def verify(
-    day: int | None = typer.Argument(None, help="Day of the challenge to verify."),
+    day: typing.Optional[int] = typer.Argument(  # noqa: UP007
+        None, help="Day of the challenge to verify."
+    ),
+    year: year_option = current_aoc_year,
     part_one_only: bool = typer.Option(
         False, "--part-one", "-1", help="Verify only part one of the solution."
     ),
@@ -135,7 +171,8 @@ def verify(
     if sum([part_one_only, part_two_only]) == 1:
         pytest_args.extend(["-k", "part_1" if part_one_only else "part_2"])
     if day is not None:
-        module = import_challenge_module(day)
+        module = import_challenge_module(year, day)
+        print(module.__file__)
         if not module.__file__:
             typer.echo(
                 typer.style(
@@ -192,7 +229,7 @@ def submit(
     ),
 ):
     validated_part = _full_validate(part)
-    module = import_challenge_module(day)
+    module = import_challenge_module(year, day)
     if validated_part == "a":
         solution = module.Challenge(use_test_data=False).part_1()
     else:
@@ -203,14 +240,7 @@ def submit(
 @app.command()
 def new_day(
     day: Annotated[int, typer.Argument(help="Day for which to create a directory.")],
-    year: Annotated[
-        int,
-        typer.Option(
-            "-y",
-            "--year",
-            help="Year for which to get the puzzle data",
-        ),
-    ] = get_current_aoc_year(),
+    year: year_option = current_aoc_year,
     directory: Annotated[
         Path,
         typer.Option(
@@ -219,7 +249,7 @@ def new_day(
             "--directory",
             help="Path to a directory with challenges",
         ),
-    ] = Path("src/aoc"),
+    ] = Path("."),
     data_directory: Annotated[
         Path,
         typer.Option(help="Path to a directory with data."),
@@ -245,7 +275,7 @@ def new_day(
     if day < 1 or day > 25:
         typer.echo(typer.style("Day must be between 1 and 25.", fg=typer.colors.RED))
         raise typer.Exit(1)
-    destination = directory.joinpath(f"day_{day:02}")
+    destination = directory.joinpath(f"aoc_solutions/{year}/day_{day:02}")
     if destination.exists() and not force:
         typer.echo(
             typer.style(
@@ -258,9 +288,9 @@ def new_day(
     typer.echo(
         typer.style(f"Created solution directory for day {day}.", fg=typer.colors.GREEN)
     )
-    data_directory.mkdir(exist_ok=True)
+    data_directory.joinpath(str(year)).mkdir(parents=True, exist_ok=True)
     if (
-        real_input_data := data_directory.joinpath(f"{day:02}_input.txt")
+        real_input_data := data_directory.joinpath(f"{year}/{day:02}_input.txt")
     ).exists() and real_input_data.stat().st_size:
         typer.echo(
             typer.style(
@@ -275,7 +305,9 @@ def new_day(
             typer.style(f"Created input data for day {day}.", fg=typer.colors.GREEN)
         )
     if (
-        test_input_data := data_directory.joinpath(Path(f"{day:02}_test_input.txt"))
+        test_input_data := data_directory.joinpath(
+            Path(f"{year}/{day:02}_test_input.txt")
+        )
     ).exists() and test_input_data.stat().st_size:
         typer.echo(
             typer.style(

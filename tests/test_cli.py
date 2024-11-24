@@ -27,6 +27,8 @@ class TestSettingUpNewDay:
             [
                 "new-day",
                 "11",
+                "--year",
+                "2023",
                 "--data-directory",
                 str(tmp_path / "data"),
                 "--directory",
@@ -37,9 +39,9 @@ class TestSettingUpNewDay:
             raise result.exception
         assert result.exit_code == 0, result.exc_info
 
-        assert (tmp_path / "data" / "11_input.txt").read_text() == "1"
-        assert (tmp_path / "data" / "11_test_input.txt").read_text() == "2"
-        assert (tmp_path / "src" / "day_11").exists()
+        assert (tmp_path / "data" / "2023" / "11_input.txt").read_text() == "1"
+        assert (tmp_path / "data" / "2023" / "11_test_input.txt").read_text() == "2"
+        assert (tmp_path / "src" / "aoc_solutions" / "2023" / "day_11").exists()
 
 
 class TestRunningSolution:
@@ -48,6 +50,10 @@ class TestRunningSolution:
             app,
             [
                 "run",
+                "--data-directory",
+                str(Path(__file__).parent.parent / "data"),
+                "--year",
+                "2023",
                 "0",
             ],
         )
@@ -62,6 +68,8 @@ class TestRunningSolution:
             app,
             [
                 "run",
+                "--data-directory",
+                str(Path(__file__).parent.parent / "data"),
                 "0",
                 "-t",
             ],
@@ -78,6 +86,8 @@ class TestRunningSolution:
             app,
             [
                 "run",
+                "--data-directory",
+                str(Path(__file__).parent / "data"),
                 "0",
                 "-f",
                 Path(__file__).parent / "data/custom_input.txt",
