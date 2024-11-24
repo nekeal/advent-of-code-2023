@@ -66,6 +66,15 @@ Day 0 - Part 1: 1
 Day 0 - Part 2: 10
 ```
 
+Alternatively you can also specify the path to the input file instead of using the default one.
+
+```sh
+$ aoc run 0 -f custom_input.txt
+Using data from custom_input.txt                                                                                                        hello, nekeal ⭐
+Day 0 - Part 1: 1
+Using data from custom_input.txt
+Day 0 - Part 2: 33
+```
 ### Verifying solution
 
 You can verify your solution by running [pytest](https://github.com/pytest-dev/pytest) tests.
