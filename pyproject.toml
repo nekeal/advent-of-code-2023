@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "aoc-python-cli"
-version = "0.0.1"
-description = "Solution of Advent of Code in Python"
+version = "0.1.0"
+description = "Advent of Code Python scaffolding/running/submitting CLI"
 authors = [
     "nekeal <szymon.sc.cader@gmail.com>",
 ]
 license = "MIT"
 readme = "README.md"
 
-homepage = "https://nekeal.github.io/advent-of-code"
-repository = "https://github.com/nekeal/advent-of-code"
+homepage = "https://nekeal.github.io/advent-of-code-python-cli"
+repository = "https://github.com/nekeal/advent-of-code-python-cli"
 
 classifiers = [
     "Intended Audience :: Developers",
