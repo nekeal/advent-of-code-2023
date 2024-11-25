@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "advent-of-code"
+name = "aoc-python-cli"
 version = "0.0.1"
 description = "Solution of Advent of Code in Python"
 authors = [
@@ -28,16 +28,17 @@ packages = [
 ]
 [tool.poetry.scripts]
 aoc = 'aoc.main:app'
+aoccli = 'aoc.main:app'
 
 [tool.poetry.dependencies]
 python = ">=3.11, <4.0"
 typer = "^0.9.0"
 advent-of-code-data = "^2.0.1"
+pytest = "*"  # Required for verifying the solution
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
 pre-commit = "*"
-pytest = "*"
 ruff = "*"
 ipython = "*"
 ipdb = "*"
