@@ -35,4 +35,4 @@ jobs:
         run: python -m pip install poetry
       - name: Install requirements
         run: poetry install
-      - run: poetry run pytest
+      - run: poetry run pytest tests
