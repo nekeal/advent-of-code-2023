@@ -3,7 +3,7 @@ import shutil
 import typing
 from datetime import datetime
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Annotated, Literal, TypeGuard
 
 import aocd
 import pytest
@@ -11,7 +11,6 @@ import typer
 from aocd import AocdError
 from aocd.exceptions import PuzzleLockedError
 from aocd.models import Puzzle
-from mypy.nodes import TypeGuard
 
 from aoc.input_providers import SingleFileInputProvider, SmartFileInputProvider
 

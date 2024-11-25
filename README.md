@@ -8,6 +8,18 @@
 ---
 
 Solutions for Advent of Code in Python
+## Installation
+
+This project comes as a standalone python package with a CLI tool to help you with boilerplate code and basic tasks.
+Recommended way to use it is via pipx or uvx:
+
+```sh
+pipx run --spec aoc-python-cli aoccli
+```
+or
+```sh
+uvx --from aoc-python-cli aoccli
+```
 
 ## Use this project as a template
 
@@ -28,8 +40,31 @@ code and basic tasks like creating a directory for a new day, running tests, etc
 ```sh
 aoc new-day <day>
 ```
-It will create a `src/aoc/day_<day>` directory with a `__init__.py` and a `test_solution.py` python files.
+It will create a `aoc_solutions/<year>/day_<day>` directory with a `__init__.py` and a `test_solution.py` python files.
 It will also create text files for both test and real data in the `data/` directory.
+
+You can specify custom data and solutions directories with `---data-directory` and `--directory` flags.
+```sh
+aoccli new-day --data-directory input_data -d advent_solutions 1
+```
+This command will create the following directory structure relatively to the current working directory:
+```
+input_data
+└── <current_year>
+    ├── 01_input.txt
+    └── 01_test_input.txt
+aoc_solutions
+└── <current_year>
+    └── day_05
+        ├── __init__.py
+        └── test_solution.py
+```
+
+> [!NOTE]
+> Alternatively you can provide a path to template directory `aoc new-day <day> -t /path/to/template/directory` that will be copied to the new day directory.
+> This can be useful if you already have a template for your solutions. However, by using this option you will
+> lose the ability to run, verify, and submit a challenge from the CLI tool.
+
 
 #### NEW! Downloading input data
 
@@ -55,7 +90,7 @@ Day 0 - Part 1: 1
 Day 0 - Part 2: 55
 ```
 
-This command will run the solution for the given day using `data/00_input.txt` file and print the answers
+This command will run the solution for the given day using `data/<year>/00_input.txt` file and print the answers
 for both parts.
 
 If you want to see the result only for the test data, you can use the `-t/--test-data` flag.
@@ -80,7 +115,8 @@ Day 0 - Part 2: 33
 You can verify your solution by running [pytest](https://github.com/pytest-dev/pytest) tests.
 There is a generic test case for each day that checks both parts of a solution against the correct answer.
 To use it you need to configure correct answers on the test class for a given day.
-
+command will run the solution for the given day using `data/00_input.txt` file and print the answers
+for both parts.
 ```python
 class TestChallenge(BaseTestChallenge):
     challenge_class = Challenge
@@ -113,7 +149,7 @@ If you don't like the idea of running tests manually, there is a pre-installed [
 package that will run tests for you after each change in the code.
 
 ```sh
-ptw src/aoc
+ptw aoc_solutions
 ```
 
 ### Submitting solution
