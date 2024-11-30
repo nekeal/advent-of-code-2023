@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aoc-python-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "Advent of Code Python scaffolding/running/submitting CLI"
 authors = [
     "nekeal <szymon.sc.cader@gmail.com>",
