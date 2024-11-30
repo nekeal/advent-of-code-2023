@@ -42,7 +42,9 @@ class BaseTestChallenge:
             pytest.skip("No expected result for part one of test data set.")
 
         challenge = self.challenge_class(
-            SmartFileInputProvider(self.challenge_class.day, use_test_data=True)
+            SmartFileInputProvider(
+                self.challenge_class.year, self.challenge_class.day, use_test_data=True
+            )
         )
         assert challenge.part_1(challenge.get_input_lines(part=1)) == expected_result
 
@@ -50,7 +52,9 @@ class BaseTestChallenge:
         if (expected_result := self.expected_results_from_test_data[1]) == Empty:
             pytest.skip("No expected results for part two of test data set.")
         challenge = self.challenge_class(
-            SmartFileInputProvider(self.challenge_class.day, use_test_data=True)
+            SmartFileInputProvider(
+                self.challenge_class.year, self.challenge_class.day, use_test_data=True
+            )
         )
         assert challenge.part_2(challenge.get_input_lines(part=2)) == expected_result
 
@@ -58,7 +62,7 @@ class BaseTestChallenge:
         if (expected_result := self.expected_results_from_real_data[0]) == Empty:
             pytest.skip("No expected result for part one of real data set.")
         challenge = self.challenge_class(
-            SmartFileInputProvider(self.challenge_class.day)
+            SmartFileInputProvider(self.challenge_class.year, self.challenge_class.day)
         )
         assert challenge.part_1(challenge.get_input_lines(part=1)) == expected_result
 
@@ -66,6 +70,6 @@ class BaseTestChallenge:
         if (expected_result := self.expected_results_from_real_data[1]) == Empty:
             pytest.skip("No expected results for part two of real data set.")
         challenge = self.challenge_class(
-            SmartFileInputProvider(self.challenge_class.day)
+            SmartFileInputProvider(self.challenge_class.year, self.challenge_class.day)
         )
         assert challenge.part_2(challenge.get_input_lines(part=2)) == expected_result
