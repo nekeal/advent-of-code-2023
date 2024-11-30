@@ -1,4 +1,5 @@
 import abc
+import inspect
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -15,16 +16,15 @@ def get_day_from_module(module_name: str) -> int:
 
 
 class ChallengeProtocol(Protocol):
-    def part_1(self, input_lines: list[str]) -> Any:
-        ...
+    def part_1(self, input_lines: list[str]) -> Any: ...
 
-    def part_2(self, input_lines: list[str]) -> Any:
-        ...
+    def part_2(self, input_lines: list[str]) -> Any: ...
 
 
 class BaseChallenge(ChallengeProtocol, abc.ABC):
     """Base class for all challenges."""
 
+    year: ClassVar[int]
     day: ClassVar[int]
 
     def __init__(
@@ -35,6 +35,7 @@ class BaseChallenge(ChallengeProtocol, abc.ABC):
         self._input_lines: dict[int | None, list[str]] = {}
 
     def __init_subclass__(cls, **kwargs):
+        cls.year = cls._get_year()
         cls.day = cls._get_day()
 
     @classmethod
@@ -45,6 +46,17 @@ class BaseChallenge(ChallengeProtocol, abc.ABC):
         if cls.__module__ == "__main__":  # challenge is run directly
             return int(Path(__main__.__file__).parent.name.split("_")[1])
         return get_day_from_module(cls.__module__)
+
+    @classmethod
+    def _get_year(cls) -> int:
+        import __main__
+
+        """Return the year of this challenge based on the module name."""
+        if cls.__module__ == "__main__":  # challenge is run directly
+            return int(Path(__main__.__file__).parent.parent.name)
+        # when running pytest it doesn't see parent module name due to relative import
+        path_to_class = Path(inspect.getfile(cls))
+        return int(path_to_class.parent.parent.name)
 
     def get_input_lines(self, part: int | None = None) -> list[str]:
         """Return the input lines for this challenge. Relative to this file"""

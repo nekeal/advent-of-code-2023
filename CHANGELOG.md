@@ -16,3 +16,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 - Update repository to the newest cookiecutter template
 - Make the project year-independent by removing hardcoded 2023 year
+- Extend the challenge interface to include also the year
