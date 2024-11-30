@@ -1,13 +1,12 @@
 # ⭐ Advent of Code - Python ⭐
 
-[![GitHub](https://img.shields.io/github/license/nekeal/advent-of-code-2023.svg)](https://github.com//nekeal/advent-of-code-2023/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/nekeal/advent-of-code-python-cli.svg)](https://github.com//nekeal/advent-of-code-python-cli/blob/master/LICENSE)
 ![GitHub Workflow Status](https://github.com/github/docs/actions/workflows/test.yml/badge.svg)
 ---
-**Source Code**: [https://github.com/nekeal/advent-of-code](https://github.com/nekeal/advent-of-code-2023)
+**Source Code**: [https://github.com/nekeal/advent-of-code-python-cli](https://github.com/nekeal/advent-of-code-python-cli)
 
 ---
 
-Solutions for Advent of Code in Python
 ## Installation
 
 This project comes as a standalone python package with a CLI tool to help you with boilerplate code and basic tasks.
@@ -19,6 +18,12 @@ pipx run --spec aoc-python-cli aoccli
 or
 ```sh
 uvx --from aoc-python-cli aoccli
+```
+
+Alternatively, you can install it with pip in the same virtualenv as you are using for your solutions:
+
+```sh
+pip install aoc-python-cli
 ```
 
 ## Use this project as a template
