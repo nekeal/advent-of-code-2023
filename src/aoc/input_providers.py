@@ -11,8 +11,7 @@ class InputProvider(abc.ABC):
     day: int
 
     @abc.abstractmethod
-    def provide_input(self, part: int | None) -> str:
-        ...
+    def provide_input(self, part: int | None) -> str: ...
 
     @property
     def _day(self) -> int:
@@ -30,7 +29,7 @@ class SmartFileInputProvider(InputProvider):
     data_dir: InitVar[Path | None] = None
 
     def __post_init__(self, data_dir: Path | None):
-        self._data_dir = data_dir or Path(__file__).parents[2].joinpath("data")
+        self._data_dir = data_dir or Path.cwd().joinpath("data")
 
     def provide_input(self, part: int | None) -> str:
         filename = self.get_input_filename(part)
