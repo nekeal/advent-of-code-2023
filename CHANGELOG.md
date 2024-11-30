@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fix day template to consider also the year of the challenge
 - Fix tests to include the year of the challenge
 - Fix `SmartSmartFileInputProvider` to use data directory relative to the working directory
+- Add working directory to sys.path when running through CLI
 
 ### Changed
 - Update repository to the newest cookiecutter template

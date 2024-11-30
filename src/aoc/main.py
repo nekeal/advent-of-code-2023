@@ -54,6 +54,9 @@ def get_challenge_module_name(year: int, day: int) -> str:
 
 def import_challenge_module(year, day: int):
     try:
+        import sys
+
+        sys.path.insert(0, ".")
         module = importlib.import_module(get_challenge_module_name(year, day))
     except ModuleNotFoundError as e:
         echo(
