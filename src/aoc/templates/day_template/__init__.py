@@ -16,9 +16,11 @@ class Challenge(BaseChallenge):
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         input_provider = SingleFileInputProvider(
-            Challenge.day, input_path=Path(sys.argv[1])
+            Challenge.year, Challenge.day, input_path=Path(sys.argv[1])
         )
         Challenge(input_provider).run()
     else:
-        Challenge(SmartFileInputProvider(Challenge.day, use_test_data=True)).run()
-        Challenge(SmartFileInputProvider(Challenge.day)).run()
+        Challenge(
+            SmartFileInputProvider(Challenge.year, Challenge.day, use_test_data=True)
+        ).run()
+        Challenge(SmartFileInputProvider(Challenge.year, Challenge.day)).run()
